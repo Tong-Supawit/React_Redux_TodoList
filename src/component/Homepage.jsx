@@ -15,10 +15,11 @@ function Homepage () {
 
     //For todoList
     const [todoListInput, setTodoListInput] = useState("");
-    const [modifyTodoListInput, setModofyTodoListInput] = useState("")
+    const [modifyTodoListInput, setModifyTodoListInput] = useState({})
     const todoList = useSelector(state => state.todoList);
 
     const handleAddTodoList = (e) => {
+        
         e.preventDefault();
         dispatch(add(todoListInput));
         setTodoListInput("")
@@ -29,8 +30,18 @@ function Homepage () {
     }
 
     const handleModifyTask = (index) => {
-        dispatch(modifyTask(modifyTodoListInput, index));
-        setModofyTodoListInput("");
+        dispatch(modifyTask(modifyTodoListInput[index], index));
+        setModifyTodoListInput(prevState => ({
+            ...prevState,
+            [index] : ""
+        }))
+    }
+
+    const handelModifyInputChange = (e, index) => {
+        setModifyTodoListInput({
+            ...modifyTodoListInput,
+            [index] : e.target.value
+        })
     }
 
     return (
@@ -46,14 +57,18 @@ function Homepage () {
                 <input type="text" value={todoListInput} onChange={(e) => setTodoListInput(e.target.value)} placeholder="Add your task..." />
                 <br /><br />
                 <button type="submit">Add new task..</button>
+                <hr />
             </form>
             <ul>
                 {todoList.map((item, index) => (
                     <li key={index}>
-                        {item}
+                        Task {index+1} : {item}
+                        <br />
                         <button onClick={() => handleRemoveTodoList(index)}>Remove</button>
-                        <input type="text" value={modifyTodoListInput} onChange={(e) => setModofyTodoListInput(e.target.value)} placeholder="Revise your task.." />
-                        <button onClick={() => handleModifyTask(index)}>Revise</button>
+                        <br />
+                        <input type="text" value={modifyTodoListInput[index]} onChange={(e) => handelModifyInputChange(e, index)} placeholder="Modify your task.." />
+                        <br />
+                        <button onClick={() => handleModifyTask(index)}>Modify</button>
                     </li>
                 ))}
             </ul>

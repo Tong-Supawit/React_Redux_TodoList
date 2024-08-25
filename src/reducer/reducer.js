@@ -19,6 +19,7 @@ const todoListState = [];
 function todoList (state = todoListState, action) {
     switch(action.type){
         case "add" :
+            if((action.payload).trim() !== "")
             return [...state, action.payload];
         case "remove" :
             return state.filter((_, index) => index !== action.payload)
