@@ -1,14 +1,29 @@
 import { combineReducers } from "redux";
 
 
-const initialCountState = 0;
+const initialCountState = {
+    count : 0,
+    picture : null
+};
 
 function count (state = initialCountState, action) {
     switch(action.type){
         case "increment" : 
-            return state + 1;
+            return {...state,
+                count : state.count+1,
+                picture : action.payload.picture
+            };
         case "decrement" : 
-            return state - 1;  
+            return {...state,
+                count : state.count-1,
+                picture : action.payload.picture
+            };  
+        case "setCount" :
+            return {
+                ...state,
+                count : action.payload.number,
+                picture : action.payload.picture
+            };  
          default : 
             return state;
     }

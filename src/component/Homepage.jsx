@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { act, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { increment, decrement, add, remove, modifyTask } from "../action/action";
+import { increment, decrement, inputSetCount, add, remove, modifyTask } from "../action/action";
 
 
 function Homepage () {
@@ -8,9 +8,19 @@ function Homepage () {
     const count = useSelector(state => state.count);
     const dispatch = useDispatch();
 
+    const [putCount, setPutCount] = useState();
+
     const handleCountAction = (e, action) => {
         e.preventDefault();
-        dispatch(action());
+        dispatch(action())
+    }
+
+    const handleCountInput = (e, action) => {
+        e.preventDefault();
+        const numberPutCount = Number(putCount.trim());
+        if(!numberPutCount) return setPutCount("");
+        dispatch(action(numberPutCount, action));
+        setPutCount("");
     }
 
     //For todoList
@@ -19,7 +29,6 @@ function Homepage () {
     const todoList = useSelector(state => state.todoList);
 
     const handleAddTodoList = (e) => {
-        
         e.preventDefault();
         dispatch(add(todoListInput));
         setTodoListInput("")
@@ -47,11 +56,19 @@ function Homepage () {
     return (
         <div>
             <h1>Tong</h1>
-            <h1>{count}</h1>
-            <form action="">
+            <h1>{count.count}</h1>
+            <form action="" >
                 <button type="button" onClick={(e) => handleCountAction(e, increment)}>+</button>
                 <button type="button" onClick={(e) => handleCountAction(e, decrement)}>-</button>
+                <br /><br />
             </form>
+            <form action="" onSubmit={(e) => handleCountInput(e, inputSetCount)}>
+            <input type="text" value={putCount} onChange={(e) => setPutCount(e.target.value)} placeholder="Try to put number..."/>
+                <br /><br />
+                <button type="button" onClick={(e) => handleCountInput(e, inputSetCount)}>Change count</button> 
+            </form>
+            <br />
+            {count.picture? <img src={count.picture} alt="" /> : "Loading....."}
             <h1>Please add your task</h1>
             <form action="" onSubmit={handleAddTodoList}>
                 <input type="text" value={todoListInput} onChange={(e) => setTodoListInput(e.target.value)} placeholder="Add your task..." />
